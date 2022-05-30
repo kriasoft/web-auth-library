@@ -1,0 +1,34 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "jest.jestCommandLine": "yarn node --experimental-vm-modules $(yarn bin jest)",
+  "jestrunner.jestCommand": "yarn node --experimental-vm-modules $(yarn bin jest)",
+  "jestrunner.enableYarnPnpSupport": true,
+  "jestrunner.yarnPnpCommand": "yarn-4.0.0-rc.6.cjs",
+  "files.exclude": {
+    "**/.cache": true,
+    "**/.DS_Store": true,
+    "**/.editorconfig": true,
+    "**/.eslintcache": true,
+    "**/.git": true,
+    "**/.gitattributes": true,
+    "**/.pnp.cjs": true,
+    "**/.pnp.loader.mjs": true,
+    "**/.prettierignore": true
+  },
+  "search.exclude": {
+    "**/dist/": true,
+    "**/yarn-error.log": true,
+    "**/yarn.lock": true,
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "name": "web-auth-library",
+  "version": "0.2.0",
+  "packageManager": "yarn@4.0.0-rc.6",
+  "description": "Authentication library for the browser environment using Web Crypto API",
+  "license": "MIT",
+  "author": {
+    "name": "Kriasoft",
+    "email": "hello@kriasoft.com",
+    "url": "https://github.com/kriasoft"
+  },
+  "repository": "kriasoft/web-auth-library",
+  "keywords": [
+    "auth",
+    "authentication",
+    "authorization",
+    "browser",
+    "crypto",
+    "decrypt",
+    "encrypt",
+    "jsonwebtoken",
+    "jwt",
+    "keys",
+    "oauth 2.0",
+    "oauth",
+    "sign",
+    "subtlecrypto",
+    "token",
+    "typescript",
+    "web",
+    "webcrypto"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth.d.ts",
+      "import": "./dist/auth.js"
+    },
+    "./credentials": {
+      "types": "./dist/credentials.d.ts",
+      "import": "./dist/credentials.js"
+    },
+    "./crypto": {
+      "types": "./dist/crypto.d.ts",
+      "import": "./dist/crypto.js"
+    }
+  },
+  "dependencies": {
+    "quick-lru": "^6.1.1",
+    "rfc4648": "^1.5.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.11.0",
+    "eslint": "^8.16.0",
+    "jest": "^28.1.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.7.2"
+  }
+}
