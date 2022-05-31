@@ -9,6 +9,23 @@
     "email": "hello@kriasoft.com",
     "url": "https://github.com/kriasoft"
   },
+  "contributors": [
+    {
+      "name": "Konstantin Tarkus",
+      "email": "hello@tarkus.me",
+      "url": "https://github.com/koistya"
+    }
+  ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/kriasoft"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/koistya"
+    }
+  ],
   "repository": "kriasoft/web-auth-library",
   "keywords": [
     "auth",

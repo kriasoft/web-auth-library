@@ -1,22 +1,19 @@
-/* SPDX-FileCopyrightText: 2020-present Kriasoft */
+/* SPDX-FileCopyrightText: 2022-present Kriasoft */
 /* SPDX-License-Identifier: MIT */
 
 import QuickLRU from "quick-lru";
 import { Credentials, getCredentials } from "./credentials.js";
 import { importKey, sign } from "./crypto.js";
 
-type AuthTokenOptions<T extends "accessToken" | "idToken"> =
-  T extends "accessToken"
-    ? {
-        credentials: Credentials | string;
-        scope: string[] | string;
-        audience?: never;
-      }
-    : {
-        credentials: Credentials | string;
-        audience: string;
-        scope?: never;
-      };
+type AccessTokenOptions = {
+  credentials: Credentials | string;
+  scope?: string[] | string;
+};
+
+type IdTokenOptions = {
+  credentials: Credentials | string;
+  audience: string;
+};
 
 type AccessToken = {
   accessToken: string;
@@ -52,17 +49,19 @@ const cache = new QuickLRU<symbol, any>({
  *   const headers = { Authorization: `Bearer ${token.accessToken}` };
  *   const res = await fetch(url, { headers });
  */
-async function getAuthToken<
-  T extends AuthTokenOptions<"accessToken"> | AuthTokenOptions<"idToken">
->(
-  options: T
-): Promise<T extends AuthTokenOptions<"accessToken"> ? AccessToken : IdToken> {
+async function getAuthToken(options: AccessTokenOptions): Promise<AccessToken>;
+async function getAuthToken(options: IdTokenOptions): Promise<IdToken>;
+async function getAuthToken(
+  options: AccessTokenOptions | IdTokenOptions
+): Promise<AccessToken | IdToken> {
   // Normalize input arguments
   const credentials = getCredentials(options.credentials);
   const scope =
-    "scope" in options && Array.isArray(options.scope)
-      ? options.scope.sort().join(" ")
-      : (options.scope as string | undefined) ?? options.audience;
+    "scope" in options || !("audience" in options)
+      ? Array.isArray(options.scope)
+        ? options.scope.sort().join(" ")
+        : options.scope
+      : options.audience;
 
   // Attempt to retrieve the token from the cache
   const keyId = credentials?.private_key_id ?? credentials.client_email;
