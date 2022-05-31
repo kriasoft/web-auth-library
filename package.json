@@ -1,6 +1,6 @@
 {
   "name": "web-auth-library",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "packageManager": "yarn@4.0.0-rc.6",
   "description": "Authentication library for the browser environment using Web Crypto API",
   "license": "MIT",
@@ -35,26 +35,15 @@
   ],
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./auth": {
-      "types": "./dist/auth.d.ts",
-      "import": "./dist/auth.js"
-    },
-    "./credentials": {
-      "types": "./dist/credentials.d.ts",
-      "import": "./dist/credentials.js"
-    },
-    "./crypto": {
-      "types": "./dist/crypto.d.ts",
-      "import": "./dist/crypto.js"
-    }
+    "./gcp": "./dist/gcp/index.js",
+    "./gcp/auth": "./dist/gcp/auth.js",
+    "./gcp/credentials": "./dist/gcp/credentials.js",
+    "./gcp/crypto": "./dist/gcp/crypto.js",
+    "./package.json": "./package.json"
   },
   "dependencies": {
     "quick-lru": "^6.1.1",
-    "rfc4648": "^1.5.1"
+    "rfc4648": "^1.5.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.11.0",
