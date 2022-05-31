@@ -50,10 +50,11 @@ Where `env.GOOGLE_CLOUD_CREDENTIALS` is an environment variable / secret
 containing a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
 (JSON) obtained from the [Google Cloud Platform](https://cloud.google.com/).
 
+#### Generating an ID token for the arbitrary resource
+
 ```ts
 import { getAuthToken, importKey, sign } from "web-auth-library/gcp";
 
-// Get an ID token for the target resource (audience)
 const token = await getAuthToken({
   credentials: env.GOOGLE_CLOUD_CREDENTIALS,
   audience: "https://example.com",
@@ -63,12 +64,15 @@ const token = await getAuthToken({
 //   audience: "https://example.com",
 //   expires: 1653855236,
 // }
+```
 
-// Convert GCP service account key into `CryptoKey` object
-const credentials = JSON.parse(env.GOOGLE_CLOUD_CREDENTIALS);
+#### Generating a digital signature
+
+```ts
+import { getCredentials, importKey, sign } from "web-auth-library/gcp";
+
+const credentials = getCredentials(env.GOOGLE_CLOUD_CREDENTIALS);
 const signingKey = await importKey(credentials.private_key, ["sign"]);
-
-// Generate a digital signature
 const signature = await sign(signingKey, "xxx");
 ```
 
