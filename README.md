@@ -23,7 +23,7 @@ a [service account key](https://cloud.google.com/iam/docs/creating-managing-serv
 (JSON), in [Cloudflare Workers](https://workers.cloudflare.com/) environment:
 
 ```ts
-import { getAuthToken } from "web-auth-library";
+import { getAuthToken } from "web-auth-library/gcp";
 
 export default {
   async fetch(req, env) {
@@ -47,8 +47,30 @@ export default {
 ```
 
 Where `env.GOOGLE_CLOUD_CREDENTIALS` is an environment variable / secret
-containing a base64-encoded [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
-obtained from the [Google Cloud Platform](https://cloud.google.com/).
+containing a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
+(JSON) obtained from the [Google Cloud Platform](https://cloud.google.com/).
+
+```ts
+import { getAuthToken, importKey, sign } from "web-auth-library/gcp";
+
+// Get an ID token for the target resource (audience)
+const token = await getAuthToken({
+  credentials: env.GOOGLE_CLOUD_CREDENTIALS,
+  audience: "https://example.com",
+});
+// => {
+//   idToken: "eyJhbGciOiJSUzI1NiIsImtpZ...",
+//   audience: "https://example.com",
+//   expires: 1653855236,
+// }
+
+// Convert GCP service account key into `CryptoKey` object
+const credentials = JSON.parse(env.GOOGLE_CLOUD_CREDENTIALS);
+const signingKey = await importKey(credentials.private_key, ["sign"]);
+
+// Generate a digital signature
+const signature = await sign(signingKey, "xxx");
+```
 
 ## Backers 💰
 

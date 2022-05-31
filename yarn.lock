@@ -3388,10 +3388,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rfc4648@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "rfc4648@npm:1.5.1"
-  checksum: 0b63ce3d2d2d6b74d43e3038b0338a71c478f61ed715c7b5ac74696d3de24b5308de0fd1b7e5f67a3510f64cbb18cf6e40d20025a0275cbc33164cf9a4ca0c04
+"rfc4648@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "rfc4648@npm:1.5.2"
+  checksum: 96ef88d246ea65f1b268c388801b2c7fc5d7d0d75875e949bfb692476fc4c94b6edf50606b245ddc1a25b2e0ef2c83261b56267e47f29401ba91da24cb9ca1f9
   languageName: node
   linkType: hard
 
@@ -3857,7 +3857,7 @@ __metadata:
     jest: "npm:^28.1.0"
     prettier: "npm:^2.6.2"
     quick-lru: "npm:^6.1.1"
-    rfc4648: "npm:^1.5.1"
+    rfc4648: "npm:^1.5.2"
     typescript: "npm:^4.7.2"
   languageName: unknown
   linkType: soft
