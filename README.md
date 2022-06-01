@@ -1,4 +1,4 @@
-# Authentication Library for the Web Environment
+# Authentication Library for the Web
 
 [![NPM Version](https://img.shields.io/npm/v/web-auth-library?style=flat-square)](https://www.npmjs.com/package/web-auth-library)
 [![NPM Downloads](https://img.shields.io/npm/dm/web-auth-library?style=flat-square)](https://www.npmjs.com/package/web-auth-library)
@@ -53,7 +53,7 @@ containing a [service account key](https://cloud.google.com/iam/docs/creating-ma
 #### Generating an ID token for the arbitrary resource
 
 ```ts
-import { getAuthToken, importKey, sign } from "web-auth-library/gcp";
+import { getAuthToken } from "web-auth-library/gcp";
 
 const token = await getAuthToken({
   credentials: env.GOOGLE_CLOUD_CREDENTIALS,
