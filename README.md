@@ -50,7 +50,7 @@ Where `env.GOOGLE_CLOUD_CREDENTIALS` is an environment variable / secret
 containing a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
 (JSON) obtained from the [Google Cloud Platform](https://cloud.google.com/).
 
-#### Generating an ID token for the arbitrary resource
+#### Generating an ID token for the target audience
 
 ```ts
 import { getAuthToken } from "web-auth-library/gcp";
@@ -74,6 +74,24 @@ import { getCredentials, importKey, sign } from "web-auth-library/gcp";
 const credentials = getCredentials(env.GOOGLE_CLOUD_CREDENTIALS);
 const signingKey = await importKey(credentials.private_key, ["sign"]);
 const signature = await sign(signingKey, "xxx");
+```
+
+#### Decoding a `JWT` token
+
+```ts
+import { jwt } from "web-auth-library";
+
+jwt.decode("eyJ0eXAiOiJKV1QiLC...");
+// => {
+//   header: { alg: "HS256", typ: "JWT" },
+//   payload: { iss: "...", aud: "...", iat: ..., exp: ... },
+//   signature: "xxx"
+// }
+
+jwt.decode("eyJ0eXAiOiJKV1QiLC...", { header: false, signature: false });
+// => {
+//   payload: { iss: "...", aud: "...", iat: ..., exp: ... },
+// }
 ```
 
 ## Backers 💰

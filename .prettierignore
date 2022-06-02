@@ -1,1 +1,4 @@
+/.yarn
+/dist
+/node_modules
 /tsconfig.json
