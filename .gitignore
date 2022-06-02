@@ -4,8 +4,9 @@
 # Compiled output
 /dist/
 
-# Yarn package manager with PnP
+# Yarn package manager
 # https://yarnpkg.com/getting-started/qa/#which-files-should-be-gitignored
+/node_modules
 .pnp.*
 .yarn/*
 !.yarn/patches

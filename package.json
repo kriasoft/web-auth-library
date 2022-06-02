@@ -36,6 +36,7 @@
     "decrypt",
     "encrypt",
     "jsonwebtoken",
+    "jwk",
     "jwt",
     "keys",
     "oauth 2.0",
@@ -52,21 +53,88 @@
   ],
   "type": "module",
   "exports": {
+    ".": "./dist/index.js",
+    "./jwt": "./dist/core/jwt.js",
     "./gcp": "./dist/gcp/index.js",
     "./gcp/auth": "./dist/gcp/auth.js",
     "./gcp/credentials": "./dist/gcp/credentials.js",
     "./gcp/crypto": "./dist/gcp/crypto.js",
     "./package.json": "./package.json"
   },
+  "scripts": {
+    "lint": "eslint --report-unused-disable-directives .",
+    "test": "node --experimental-vm-modules $(yarn bin jest)",
+    "build": "rm -rf ./dist && yarn tsc"
+  },
   "dependencies": {
     "quick-lru": "^6.1.1",
     "rfc4648": "^1.5.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-typescript": "^7.17.12",
     "@cloudflare/workers-types": "^3.11.0",
+    "@types/jest": "^28.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "babel-plugin-replace-import-extension": "^1.1.3",
     "eslint": "^8.16.0",
     "jest": "^28.1.0",
     "prettier": "^2.6.2",
     "typescript": "^4.7.2"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": "last 2 Chrome versions",
+          "modules": false
+        }
+      ],
+      "@babel/preset-typescript"
+    ],
+    "plugins": [
+      [
+        "replace-import-extension",
+        {
+          "extMapping": {
+            ".js": ".ts"
+          }
+        }
+      ]
+    ]
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "browser": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "*.test.ts",
+          "*.test.js"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ],
+    "ignorePatterns": [
+      "/.yarn/**",
+      "/dist/**",
+      "/node_modules/**"
+    ]
   }
 }

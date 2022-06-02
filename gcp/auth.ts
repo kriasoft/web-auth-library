@@ -33,6 +33,7 @@ type AuthError = {
   error_description: string;
 };
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const cache = new QuickLRU<symbol, any>({
   maxSize: 100,
   maxAge: 3600000 - 10000,
