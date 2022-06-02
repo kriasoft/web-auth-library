@@ -3,92 +3,124 @@
 
 import { base64url } from "rfc4648";
 
-const decode: DecodeFn = function decode(token, options = {}) {
-  const parts = token.split(".");
+/**
+ * Converts the given JSON Web Token string into a `Jwt` object.
+ */
+function decode<T = JwtPayload, H = JwtHeader>(token: string): Jwt<T, H> {
+  const segments = token.split(".");
   const dec = new TextDecoder();
-  const jwt = {} as Jwt;
 
-  if (parts.length !== 3) {
+  if (segments.length !== 3) {
     throw new Error();
   }
 
-  if (options.header ?? true) {
-    Object.defineProperty(jwt, "header", {
-      value: JSON.parse(dec.decode(base64url.parse(parts[0], { loose: true }))),
-      enumerable: true,
-    });
+  return {
+    header: JSON.parse(
+      dec.decode(base64url.parse(segments[0], { loose: true }))
+    ),
+
+    payload: JSON.parse(
+      dec.decode(base64url.parse(segments[1], { loose: true }))
+    ),
+
+    data: `${segments[0]}.${segments[1]}`,
+    signature: segments[2],
+  };
+}
+
+async function verify<T = JwtPayload, H = JwtHeader>(
+  token: Jwt<T, H> | string,
+  options: VerifyOptions
+): Promise<T | undefined> {
+  const enc = new TextEncoder();
+  const jwt = typeof token === "string" ? decode<T, H>(token) : token;
+  const aud = (jwt.payload as { aud?: string }).aud;
+
+  if (
+    options.audience &&
+    (!aud ||
+      (Array.isArray(options.audience) && !options.audience.includes(aud)) ||
+      options.audience !== aud)
+  ) {
+    return;
   }
 
-  if (options.payload ?? true) {
-    Object.defineProperty(jwt, "payload", {
-      value: JSON.parse(dec.decode(base64url.parse(parts[1], { loose: true }))),
-      enumerable: true,
-    });
-  }
+  const verified = await crypto.subtle.verify(
+    options.key.algorithm,
+    options.key,
+    base64url.parse(jwt.signature, { loose: true }),
+    enc.encode(jwt.data)
+  );
 
-  if (options.signature ?? true) {
-    Object.defineProperty(jwt, "signature", {
-      value: parts[2],
-      enumerable: true,
-    });
-  }
-
-  return jwt;
-};
+  return verified ? jwt.payload : undefined;
+}
 
 /* ------------------------------------------------------------------------------- *
  * TypeScript definitions
  * ------------------------------------------------------------------------------- */
 
+/**
+ * Identifies which algorithm is used to generate the signature.
+ */
 interface JwtHeader {
-  type: string;
-  alg: string;
-  kid: string;
+  /** Token type */
+  typ?: string;
+  /** Content type*/
+  cty?: string;
+  /** Message authentication code algorithm */
+  alg?: string;
+  /** Key ID */
+  kid?: string;
+  /** x.509 Certificate Chain */
+  x5c?: string;
+  /** x.509 Certificate Chain URL */
+  x5u?: string;
+  /** Critical */
+  crit?: string;
 }
 
+/**
+ * Contains a set of claims.
+ */
 interface JwtPayload {
-  iss: string;
-  aud: string;
-  iat: number;
-  exp: number;
+  /** Issuer */
+  iss?: string;
+  /** Subject */
+  sub?: string;
+  /** Audience */
+  aud?: string;
+  /** Authorized party */
+  azp?: string;
+  /** Expiration time */
+  exp?: number;
+  /** Not before */
+  nbf?: number;
+  /** Issued at */
+  iat?: number;
+  /** JWT ID */
+  jti?: string;
 }
 
-type Jwt<
-  Header extends JwtHeader = JwtHeader,
-  Payload extends JwtPayload = JwtPayload,
-  Signature extends string = string
-> = Pick<
-  {
-    header: Header;
-    payload: Payload;
-    signature: Signature;
-  },
-  | (Header extends JwtHeader ? "header" : never)
-  | (Payload extends JwtPayload ? "payload" : never)
-  | (Signature extends string ? "signature" : never)
->;
-
-type DecodeOptions = {
-  /** @default true */
-  header?: boolean;
-  /** @default true */
-  payload?: boolean;
-  /** @default true */
-  signature?: boolean;
+/**
+ * JSON Web Token (JWT)
+ */
+type Jwt<T = JwtPayload, H = JwtHeader> = {
+  header: H;
+  payload: T;
+  data: string;
+  signature: string;
 };
 
-type DecodeFn<
-  Header extends JwtHeader = JwtHeader,
-  Payload extends JwtPayload = JwtPayload,
-  Signature extends string = string,
-  Options extends DecodeOptions = DecodeOptions
-> = (
-  token: string,
-  options?: Options
-) => Jwt<
-  Options extends { header: false } ? never : Header,
-  Options extends { payload: false } ? never : Payload,
-  Options extends { signature: false } ? never : Signature
->;
+type VerifyOptions = {
+  key: CryptoKey;
+  audience?: string[] | string;
+};
 
-export { decode, type Jwt, type JwtHeader, type JwtPayload };
+export {
+  decode,
+  verify,
+  type Jwt,
+  type JwtHeader,
+  type JwtPayload,
+  type VerifyOptions,
+};
