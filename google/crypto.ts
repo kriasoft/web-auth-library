@@ -3,6 +3,11 @@
 
 import { base64, base64url } from "rfc4648";
 
+const algorithm: SubtleCryptoImportKeyAlgorithm = {
+  name: "RSASSA-PKCS1-v1_5",
+  hash: { name: "SHA-256" },
+};
+
 type KeyUsage =
   | "encrypt"
   | "decrypt"
@@ -32,10 +37,7 @@ function importKey(keyData: string, keyUsages: KeyUsage[]): Promise<CryptoKey> {
         .replace("-----END PRIVATE KEY-----", "")
         .replace(/\n/g, "")
     ),
-    {
-      name: "RSASSA-PKCS1-V1_5",
-      hash: { name: "SHA-256" },
-    },
+    algorithm,
     false,
     keyUsages
   );
@@ -50,4 +52,4 @@ async function sign(key: CryptoKey, data: string): Promise<string> {
   return base64url.stringify(new Uint8Array(output), { pad: false });
 }
 
-export { sign, importKey, KeyUsage };
+export { sign, importKey, KeyUsage, algorithm };

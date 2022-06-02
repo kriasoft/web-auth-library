@@ -18,42 +18,36 @@ $ yarn add web-auth-library
 
 ## Usage Example
 
-Retrieving an access token from the Google's OAuth 2.0 authorization server using
-a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
-(JSON), in [Cloudflare Workers](https://workers.cloudflare.com/) environment:
+### Retrieving an access token from Google's OAuth 2.0 authorization server
 
 ```ts
-import { getAuthToken } from "web-auth-library/gcp";
+import { getAuthToken } from "web-auth-library/google";
 
-export default {
-  async fetch(req, env) {
-    // Get an access token for interacting with Google Cloud Platform APIs.
-    const token = await getAuthToken({
-      credentials: env.GOOGLE_CLOUD_CREDENTIALS,
-      scope: "https://www.googleapis.com/auth/cloud-platform",
-    });
-    // => {
-    //   accessToken: "ya29.c.b0AXv0zTOQVv0...",
-    //   type: "Bearer",
-    //   expires: 1653855236,
-    // }
-    return fetch("https://cloudresourcemanager.googleapis.com/v1/projects", {
-      headers: {
-        authorization: `Bearer ${token.accessToken}`,
-      },
-    });
+const token = await getAuthToken({
+  credentials: env.GOOGLE_CLOUD_CREDENTIALS,
+  scope: "https://www.googleapis.com/auth/cloud-platform",
+});
+// => {
+//   accessToken: "ya29.c.b0AXv0zTOQVv0...",
+//   type: "Bearer",
+//   expires: 1653855236,
+// }
+
+return fetch("https://cloudresourcemanager.googleapis.com/v1/projects", {
+  headers: {
+    authorization: `Bearer ${token.accessToken}`,
   },
-} as ExportedHandler;
+});
 ```
 
 Where `env.GOOGLE_CLOUD_CREDENTIALS` is an environment variable / secret
 containing a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
 (JSON) obtained from the [Google Cloud Platform](https://cloud.google.com/).
 
-#### Generating an ID token for the target audience
+#### Retrieving an ID token for the target audience
 
 ```ts
-import { getAuthToken } from "web-auth-library/gcp";
+import { getAuthToken } from "web-auth-library/google";
 
 const token = await getAuthToken({
   credentials: env.GOOGLE_CLOUD_CREDENTIALS,
@@ -62,14 +56,59 @@ const token = await getAuthToken({
 // => {
 //   idToken: "eyJhbGciOiJSUzI1NiIsImtpZ...",
 //   audience: "https://example.com",
-//   expires: 1653855236,
+//   expires: 1654199401,
+// }
+```
+
+#### Decoding an ID token
+
+```ts
+import { jwt } from "web-auth-library/google";
+
+jwt.decode(idToken);
+// {
+//   header: {
+//     alg: 'RS256',
+//     kid: '38f3883468fc659abb4475f36313d22585c2d7ca',
+//     typ: 'JWT'
+//   },
+//   payload: {
+//     iss: 'https://accounts.google.com',
+//     sub: '118363561738753879481'
+//     aud: 'https://example.com',
+//     azp: 'example@example.iam.gserviceaccount.com',
+//     email: 'example@example.iam.gserviceaccount.com',
+//     email_verified: true,
+//     exp: 1654199401,
+//     iat: 1654195801,
+//   },
+//   data: 'eyJhbGciOiJ...',
+//   signature: 'MDzBStL...'
+// }
+```
+
+#### Verifying an ID token
+
+```ts
+import { verifyIdToken } from "web-auth-library/google";
+
+const token = await verifyIdToken(idToken, { audience: "https://example.com" });
+// => {
+//   iss: 'https://accounts.google.com',
+//   aud: 'https://example.com',
+//   sub: '118363561738753879481'
+//   azp: 'example@example.iam.gserviceaccount.com',
+//   email: 'example@example.iam.gserviceaccount.com',
+//   email_verified: true,
+//   exp: 1654199401,
+//   iat: 1654195801,
 // }
 ```
 
 #### Generating a digital signature
 
 ```ts
-import { getCredentials, importKey, sign } from "web-auth-library/gcp";
+import { getCredentials, importKey, sign } from "web-auth-library/google";
 
 const credentials = getCredentials(env.GOOGLE_CLOUD_CREDENTIALS);
 const signingKey = await importKey(credentials.private_key, ["sign"]);

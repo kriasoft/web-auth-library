@@ -2,36 +2,10 @@
 /* SPDX-License-Identifier: MIT */
 
 import QuickLRU from "quick-lru";
+import { decode, verify } from "../core/jwt.js";
 import { Credentials, getCredentials } from "./credentials.js";
-import { importKey, sign } from "./crypto.js";
-
-type AccessTokenOptions = {
-  credentials: Credentials | string;
-  scope?: string[] | string;
-};
-
-type IdTokenOptions = {
-  credentials: Credentials | string;
-  audience: string;
-};
-
-type AccessToken = {
-  accessToken: string;
-  type: string;
-  scope: string;
-  expires: number;
-};
-
-type IdToken = {
-  idToken: string;
-  audience: string;
-  expires: number;
-};
-
-type AuthError = {
-  error: string;
-  error_description: string;
-};
+import { algorithm, importKey, sign } from "./crypto.js";
+import { type JwtHeader, type JwtPayload } from "./jwt.js";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const cache = new QuickLRU<symbol, any>({
@@ -128,4 +102,63 @@ export async function fetchAuthToken(
       } as IdToken);
 }
 
-export { type AccessToken, type IdToken, getAuthToken };
+async function verifyIdToken(
+  idToken: string,
+  options?: VerifyIdTokenOptions
+): Promise<JwtPayload | undefined> {
+  const jwt = decode<JwtPayload, JwtHeader>(idToken);
+
+  const res = await fetch("https://www.googleapis.com/oauth2/v3/certs");
+  const data = await res.json<{ keys: JsonWebKey[] }>();
+
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const jwk = data.keys.find((key) => (key as any).kid === jwt.header.kid);
+
+  const key = await crypto.subtle.importKey(
+    "jwk",
+    jwk as JsonWebKey,
+    algorithm,
+    false,
+    ["verify"]
+  );
+
+  return await verify(jwt, { key, audience: options?.audience });
+}
+
+/* ------------------------------------------------------------------------------- *
+ * TypeScript definitions
+ * ------------------------------------------------------------------------------- */
+
+type AccessTokenOptions = {
+  credentials: Credentials | string;
+  scope?: string[] | string;
+};
+
+type IdTokenOptions = {
+  credentials: Credentials | string;
+  audience: string;
+};
+
+type AccessToken = {
+  accessToken: string;
+  type: string;
+  scope: string;
+  expires: number;
+};
+
+type IdToken = {
+  idToken: string;
+  audience: string;
+  expires: number;
+};
+
+type AuthError = {
+  error: string;
+  error_description: string;
+};
+
+type VerifyIdTokenOptions = {
+  audience?: string[] | string;
+};
+
+export { type AccessToken, type IdToken, getAuthToken, verifyIdToken };

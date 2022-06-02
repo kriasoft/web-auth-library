@@ -55,10 +55,11 @@
   "exports": {
     ".": "./dist/index.js",
     "./jwt": "./dist/core/jwt.js",
-    "./gcp": "./dist/gcp/index.js",
-    "./gcp/auth": "./dist/gcp/auth.js",
-    "./gcp/credentials": "./dist/gcp/credentials.js",
-    "./gcp/crypto": "./dist/gcp/crypto.js",
+    "./google": "./dist/google/index.js",
+    "./google/auth": "./dist/google/auth.js",
+    "./google/credentials": "./dist/google/credentials.js",
+    "./google/crypto": "./dist/google/crypto.js",
+    "./google/jwt": "./dist/google/jwt.js",
     "./package.json": "./package.json"
   },
   "scripts": {
