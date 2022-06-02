@@ -1,4 +1,4 @@
-/* SPDX-FileCopyrightText: 2020-present Kriasoft */
+/* SPDX-FileCopyrightText: 2022-present Kriasoft */
 /* SPDX-License-Identifier: MIT */
 
 /**
@@ -8,14 +8,12 @@
  * @type {import("@jest/types").Config.InitialOptions}
  */
 export default {
+  testEnvironment: "miniflare",
+
   testPathIgnorePatterns: [
-    "<rootDir>/.cache/",
-    "<rootDir>/.github/",
-    "<rootDir>/.husky/",
-    "<rootDir>/.vscode/",
+    "<rootDir>/.git/",
     "<rootDir>/.yarn/",
     "<rootDir>/dist/",
-    "<rootDir>/scripts/",
   ],
 
   moduleFileExtensions: [
@@ -32,9 +30,11 @@ export default {
 
   modulePathIgnorePatterns: ["<rootDir>/dist/"],
 
-  // transform: {
-  //   "\\.ts$": "babel-jest",
-  // },
+  setupFiles: ["<rootDir>/test/setup.ts"],
+
+  transform: {
+    "\\.ts$": "babel-jest",
+  },
 
   extensionsToTreatAsEsm: [".ts"],
 };

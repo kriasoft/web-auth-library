@@ -6,10 +6,9 @@ import { base64url } from "rfc4648";
 const decode: DecodeFn = function decode(token, options = {}) {
   const parts = token.split(".");
   const dec = new TextDecoder();
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const jwt = {} as any;
+  const jwt = {} as Jwt;
 
-  if (parts.length != 3) {
+  if (parts.length !== 3) {
     throw new Error();
   }
 
