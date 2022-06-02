@@ -5,6 +5,9 @@ name: PR
 
 on: [pull_request]
 
+env:
+  GOOGLE_CLOUD_CREDENTIALS: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}
+
 jobs:
   build:
     runs-on: ubuntu-latest

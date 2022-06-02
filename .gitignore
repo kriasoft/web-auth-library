@@ -19,6 +19,9 @@
 yarn-debug.log*
 yarn-error.log*
 
+# Overrides for *.env files
+*.override.env
+
 # Visual Studio Code
 # https://github.com/github/gitignore/blob/master/Global/VisualStudioCode.gitignore
 .vscode/*
