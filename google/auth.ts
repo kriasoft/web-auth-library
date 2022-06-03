@@ -2,10 +2,9 @@
 /* SPDX-License-Identifier: MIT */
 
 import QuickLRU from "quick-lru";
-import { decode, verify } from "../core/jwt.js";
 import { Credentials, getCredentials } from "./credentials.js";
 import { algorithm, importKey, sign } from "./crypto.js";
-import { type JwtHeader, type JwtPayload } from "./jwt.js";
+import { decode, verify, type JwtPayload } from "./jwt.js";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const cache = new QuickLRU<symbol, any>({
@@ -106,14 +105,13 @@ async function verifyIdToken(
   idToken: string,
   options?: VerifyIdTokenOptions
 ): Promise<JwtPayload | undefined> {
-  const jwt = decode<JwtPayload, JwtHeader>(idToken);
+  const jwt = decode(idToken);
 
   const res = await fetch("https://www.googleapis.com/oauth2/v3/certs");
   const data = await res.json<{ keys: JsonWebKey[] }>();
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const jwk = data.keys.find((key) => (key as any).kid === jwt.header.kid);
-
   const key = await crypto.subtle.importKey(
     "jwk",
     jwk as JsonWebKey,

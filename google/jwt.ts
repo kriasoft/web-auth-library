@@ -52,4 +52,4 @@ const decode = decodeCore as (token: string) => Jwt;
 const verify = verifyCore as (
   token: Jwt | string,
   options: VerifyOptions
-) => Promise<Jwt | undefined>;
+) => Promise<JwtPayload | undefined>;
