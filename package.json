@@ -1,7 +1,7 @@
 {
   "name": "web-auth-library",
   "version": "0.4.1",
-  "packageManager": "yarn@4.0.0-rc.10",
+  "packageManager": "yarn@4.0.0-rc.39",
   "description": "Authentication library for the browser environment using Web Crypto API",
   "license": "MIT",
   "author": {
