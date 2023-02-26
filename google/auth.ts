@@ -75,7 +75,7 @@ export async function fetchAuthToken(
   const signature = await sign(signingKey, `${header}.${payload}`);
 
   // OAuth 2.0 authorization request
-  const body = new FormData();
+  const body = new URLSearchParams();
   body.append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
   body.append("assertion", `${header}.${payload}.${signature}`);
   const res = await fetch(credentials.token_uri, { method: "POST", body });
