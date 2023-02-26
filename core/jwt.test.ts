@@ -8,13 +8,13 @@ test("jwt.decode(token)", () => {
   const result = jwt.decode(token);
 
   expect(result).toMatchInlineSnapshot(`
-    Object {
+    {
       "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmb28iOiJiYXIiLCJleHAiOjEzOTMyODY4OTMsImlhdCI6MTM5MzI2ODg5M30",
-      "header": Object {
+      "header": {
         "alg": "HS256",
         "typ": "JWT",
       },
-      "payload": Object {
+      "payload": {
         "exp": 1393286893,
         "foo": "bar",
         "iat": 1393268893,
@@ -29,13 +29,13 @@ test("jwt.decode(unicodeToken)", () => {
   const result = jwt.decode(unicodeToken);
 
   expect(result).toMatchInlineSnapshot(`
-    Object {
+    {
       "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9zw6kiLCJpYXQiOjE0MjU2NDQ5NjZ9",
-      "header": Object {
+      "header": {
         "alg": "HS256",
         "typ": "JWT",
       },
-      "payload": Object {
+      "payload": {
         "iat": 1425644966,
         "name": "José",
       },
@@ -49,13 +49,13 @@ test("jwt.decode(binaryToken)", () => {
   const result = jwt.decode(binaryToken);
 
   expect(result).toMatchInlineSnapshot(`
-    Object {
+    {
       "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9z6SIsImlhdCI6MTQyNTY0NDk2Nn0",
-      "header": Object {
+      "header": {
         "alg": "HS256",
         "typ": "JWT",
       },
-      "payload": Object {
+      "payload": {
         "iat": 1425644966,
         "name": "Jos�",
       },
