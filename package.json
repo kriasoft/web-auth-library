@@ -1,6 +1,6 @@
 {
   "name": "web-auth-library",
-  "version": "0.4.2",
+  "version": "1.0.0",
   "packageManager": "yarn@4.0.0-rc.39",
   "description": "Authentication library for the browser environment using Web Crypto API",
   "license": "MIT",
@@ -31,16 +31,22 @@
     "auth",
     "authentication",
     "authorization",
+    "bearer",
     "browser",
+    "bun",
+    "cloudflare-workers",
+    "cloudflare",
     "crypto",
     "decrypt",
+    "deno",
     "encrypt",
+    "hono",
     "jsonwebtoken",
     "jwk",
     "jwt",
     "keys",
-    "oauth 2.0",
     "oauth",
+    "oauth2",
     "sign",
     "subtlecrypto",
     "token",
@@ -55,11 +61,11 @@
   "exports": {
     ".": "./dist/index.js",
     "./jwt": "./dist/core/jwt.js",
-    "./google": "./dist/google/index.js",
-    "./google/auth": "./dist/google/auth.js",
-    "./google/credentials": "./dist/google/credentials.js",
-    "./google/crypto": "./dist/google/crypto.js",
-    "./google/jwt": "./dist/google/jwt.js",
+    "./google": {
+      "types": "./dist/google/index.d.ts",
+      "import": "./dist/google/index.js",
+      "default": "./dist/google/index.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -68,7 +74,7 @@
     "build": "rm -rf ./dist && yarn tsc"
   },
   "dependencies": {
-    "quick-lru": "^6.1.1",
+    "jose": ">= 4.12.0 < 5.0.0",
     "rfc4648": "^1.5.2"
   },
   "devDependencies": {
@@ -78,8 +84,8 @@
     "@babel/preset-typescript": "^7.21.0",
     "@cloudflare/workers-types": "^4.20230221.0",
     "@types/jest": "^29.4.0",
-    "@typescript-eslint/eslint-plugin": "^5.53.0",
-    "@typescript-eslint/parser": "^5.53.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
     "babel-jest": "^29.4.3",
     "babel-plugin-replace-import-extension": "^1.1.3",
     "dotenv": "^16.0.3",

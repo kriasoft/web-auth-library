@@ -28,3 +28,4 @@ jobs:
       - run: yarn test
         env:
           GOOGLE_CLOUD_CREDENTIALS: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}

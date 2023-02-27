@@ -31,5 +31,34 @@
     "**/yarn.lock": true,
     "**/.yarn": true,
     "**/.pnp.*": true
-  }
+  },
+  "terminal.integrated.env.linux": {
+    "CACHE_DIR": "${workspaceFolder}/.cache"
+  },
+  "terminal.integrated.env.osx": {
+    "CACHE_DIR": "${workspaceFolder}/.cache"
+  },
+  "terminal.integrated.env.windows": {
+    "CACHE_DIR": "${workspaceFolder}\\.cache"
+  },
+  "cSpell.words": [
+    "async",
+    "await",
+    "cjs",
+    "endregion",
+    "esm",
+    "hono",
+    "identitytoolkit",
+    "jest",
+    "mjs",
+    "node",
+    "ts",
+    "tsconfig",
+    "tslib",
+    "tslint",
+    "tsnode",
+    "tsv",
+    "tsx",
+    "yarn"
+  ]
 }
