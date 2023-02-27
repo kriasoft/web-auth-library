@@ -1,4 +1,4 @@
-# Authentication Library for the Web
+# Web Auth Library
 
 [![NPM Version](https://img.shields.io/npm/v/web-auth-library?style=flat-square)](https://www.npmjs.com/package/web-auth-library)
 [![NPM Downloads](https://img.shields.io/npm/dm/web-auth-library?style=flat-square)](https://www.npmjs.com/package/web-auth-library)
@@ -6,7 +6,19 @@
 [![Donate](https://img.shields.io/badge/dynamic/json?color=%23ff424d&label=Patreon&style=flat-square&query=data.attributes.patron_count&suffix=%20patrons&url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F233228)](http://patreon.com/koistya)
 [![Discord](https://img.shields.io/discord/643523529131950086?label=Chat&style=flat-square)](https://discord.gg/bSsv7XM)
 
-A collection of utility functions for working with [Web Crypto API](https://developer.mozilla.org/docs/Web/API/Web_Crypto_API).
+Authentication library for Google Cloud, Firebase, and other cloud providers that uses standard [Web Crypto API](https://developer.mozilla.org/docs/Web/API/Web_Crypto_API) and runs in different environments and runtimes, including but not limited to:
+
+- [Bun](https://bun.sh/)
+- [Browsers](https://developer.mozilla.org/docs/Web/API/Web_Crypto_API)
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [Deno](https://deno.land/)
+- [Electron](https://www.electronjs.org/)
+- [Node.js](https://nodejs.org/)
+- [Vercel's Edge Runtime](https://edge-runtime.vercel.app/)
+
+It has minimum dependencies, small bundle size, and optimized for speed and performance.
+
+## Getting Stated
 
 ```bash
 # Install using NPM
@@ -16,121 +28,93 @@ $ npm install web-auth-library --save
 $ yarn add web-auth-library
 ```
 
-## Usage Example
+## Usage Examples
 
-### Retrieving an access token from Google's OAuth 2.0 authorization server
+### Verify the user ID Token issued by Google or Firebase
 
-```ts
-import { getAuthToken } from "web-auth-library/google";
-
-const token = await getAuthToken({
-  credentials: env.GOOGLE_CLOUD_CREDENTIALS,
-  scope: "https://www.googleapis.com/auth/cloud-platform",
-});
-// => {
-//   accessToken: "ya29.c.b0AXv0zTOQVv0...",
-//   type: "Bearer",
-//   expires: 1653855236,
-// }
-
-return fetch("https://cloudresourcemanager.googleapis.com/v1/projects", {
-  headers: {
-    authorization: `Bearer ${token.accessToken}`,
-  },
-});
-```
-
-Where `env.GOOGLE_CLOUD_CREDENTIALS` is an environment variable / secret
-containing a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
-(JSON) obtained from the [Google Cloud Platform](https://cloud.google.com/).
-
-#### Retrieving an ID token for the target audience
-
-```ts
-import { getAuthToken } from "web-auth-library/google";
-
-const token = await getAuthToken({
-  credentials: env.GOOGLE_CLOUD_CREDENTIALS,
-  audience: "https://example.com",
-});
-// => {
-//   idToken: "eyJhbGciOiJSUzI1NiIsImtpZ...",
-//   audience: "https://example.com",
-//   expires: 1654199401,
-// }
-```
-
-#### Decoding an ID token
-
-```ts
-import { jwt } from "web-auth-library/google";
-
-jwt.decode(idToken);
-// {
-//   header: {
-//     alg: 'RS256',
-//     kid: '38f3883468fc659abb4475f36313d22585c2d7ca',
-//     typ: 'JWT'
-//   },
-//   payload: {
-//     iss: 'https://accounts.google.com',
-//     sub: '118363561738753879481'
-//     aud: 'https://example.com',
-//     azp: 'example@example.iam.gserviceaccount.com',
-//     email: 'example@example.iam.gserviceaccount.com',
-//     email_verified: true,
-//     exp: 1654199401,
-//     iat: 1654195801,
-//   },
-//   data: 'eyJhbGciOiJ...',
-//   signature: 'MDzBStL...'
-// }
-```
-
-#### Verifying an ID token
+**NOTE**: The `credentials` argument in the examples below is expected to be a serialized JSON string of a [Google Cloud service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys), `apiKey` is Google Cloud API Key (Firebase API Key), and `projectId` is a Google Cloud project ID.
 
 ```ts
 import { verifyIdToken } from "web-auth-library/google";
 
-const token = await verifyIdToken(idToken, { audience: "https://example.com" });
+const token = await verifyIdToken({
+  idToken,
+  credentials: env.GOOGLE_CLOUD_CREDENTIALS,
+});
+
 // => {
-//   iss: 'https://accounts.google.com',
-//   aud: 'https://example.com',
-//   sub: '118363561738753879481'
-//   azp: 'example@example.iam.gserviceaccount.com',
-//   email: 'example@example.iam.gserviceaccount.com',
-//   email_verified: true,
-//   exp: 1654199401,
-//   iat: 1654195801,
+//   iss: 'https://securetoken.google.com/example',
+//   aud: 'example',
+//   auth_time: 1677525930,
+//   user_id: 'temp',
+//   sub: 'temp',
+//   iat: 1677525930,
+//   exp: 1677529530,
+//   firebase: {}
 // }
 ```
 
-#### Generating a digital signature
+### Create an access token for accessing [Google Cloud APIs](https://developers.google.com/apis-explorer)
 
 ```ts
-import { getCredentials, importKey, sign } from "web-auth-library/google";
+import { getAccessToken } from "web-auth-library/google";
 
-const credentials = getCredentials(env.GOOGLE_CLOUD_CREDENTIALS);
-const signingKey = await importKey(credentials.private_key, ["sign"]);
-const signature = await sign(signingKey, "xxx");
+// Generate a short lived access token from the service account key credentials
+const accessToken = await getAccessToken({
+  credentials: env.GOOGLE_CLOUD_CREDENTIALS,
+  scope: "https://www.googleapis.com/auth/cloud-platform",
+});
+
+// Make a request to one of the Google's APIs using that token
+const res = await fetch(
+  "https://cloudresourcemanager.googleapis.com/v1/projects",
+  {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  }
+);
 ```
 
-#### Decoding a `JWT` token
+## Create a custom ID token using Service Account credentials
 
 ```ts
-import { jwt } from "web-auth-library";
+import { getIdToken } from "web-auth-library/google";
 
-jwt.decode("eyJ0eXAiOiJKV1QiLC...");
-// => {
-//   header: { alg: "HS256", typ: "JWT" },
-//   payload: { iss: "...", aud: "...", iat: ..., exp: ... },
-//   signature: "xxx"
-// }
+const idToken = await getIdToken({
+  credentials: env.GOOGLE_CLOUD_CREDENTIALS,
+  audience: "https://example.com",
+});
+```
 
-jwt.decode("eyJ0eXAiOiJKV1QiLC...", { header: false, signature: false });
-// => {
-//   payload: { iss: "...", aud: "...", iat: ..., exp: ... },
-// }
+## An alternative way passing credentials
+
+Instead of passing credentials via `options.credentials` argument, you can also let the library pick up credentials from the list of environment variables using standard names such as `GOOGLE_CLOUD_CREDENTIALS`, `GOOGLE_CLOUD_PROJECT`, `FIREBASE_API_KEY`, for example:
+
+```ts
+import { verifyIdToken } from "web-auth-library/google";
+
+const env = { GOOGLE_CLOUD_CREDENTIALS: "..." };
+const token = await verifyIdToken({ idToken, env });
+```
+
+## Optimize cache renewal background tasks
+
+Pass the optional `waitUntil(promise)` function provided by the target runtime to optimize the way authentication tokens are being renewed in background. For example, using Cloudflare Workers and [Hono.js](https://hono.dev/):
+
+```ts
+import { Hono } from "hono";
+import { verifyIdToken } from "web-auth-library/google";
+
+const app = new Hono();
+
+app.get("/", ({ env, executionCtx, json }) => {
+  const idToken = await verifyIdToken({
+    idToken: "...",
+    waitUntil: executionCtx.waitUntil,
+    env,
+  });
+
+  return json({ ... });
+})
 ```
 
 ## Backers 💰
