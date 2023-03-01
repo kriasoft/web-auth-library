@@ -1367,10 +1367,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/workers-types@npm:^4.20221111.1, @cloudflare/workers-types@npm:^4.20230221.0":
-  version: 4.20230221.0
-  resolution: "@cloudflare/workers-types@npm:4.20230221.0"
-  checksum: d7ae864a13ab65dc792511d3e258c4614c10f38211ab9e838cc2c5aba4d0a22349499676802a3e8c3d0589a52b373fd132eb4202779bc60086aa9940011a3866
+"@cloudflare/workers-types@npm:^4.20221111.1, @cloudflare/workers-types@npm:^4.20230228.0":
+  version: 4.20230228.0
+  resolution: "@cloudflare/workers-types@npm:4.20230228.0"
+  checksum: 0c33f106f864f18b853ac80160dcd8ffe58182bfb6be1b85db425421ecfb6a9fe7eb5c99865dec6eba00f310751b8c940f1c869b923cc75b16abc70adf4ce8f9
   languageName: node
   linkType: hard
 
@@ -2987,9 +2987,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.284":
-  version: 1.4.312
-  resolution: "electron-to-chromium@npm:1.4.312"
-  checksum: b852284945b796dc3c1faa73b063f653fc390c49150d0dfc7ec40cfae7933f5b8e5e854a87b13de2aba5e66134d2072ac769011cf2124fd206be2d7c8ec35993
+  version: 1.4.315
+  resolution: "electron-to-chromium@npm:1.4.315"
+  checksum: c99956e5e455f8a1fe41ceb126336ece0bf218e79ba9bfda3a27180a48fc58c26f04a54d5bceb8cee531a8b3a920936075c6dcffbb400a23c0a09cb6b5762abe
   languageName: node
   linkType: hard
 
@@ -4543,9 +4543,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^7.7.1":
-  version: 7.17.0
-  resolution: "lru-cache@npm:7.17.0"
-  checksum: ad1e489d35299ad8f5f4083d1a016b545e5c7df1476e7cf0eec49d8b4f9846a5bda81ff89a84cab08c232423ef864e16c72ba80b039a90f83c0f79caab285378
+  version: 7.18.1
+  resolution: "lru-cache@npm:7.18.1"
+  checksum: 257128a56c1b0a0b3bd86d2e3ab9f8a0b66f13bf3c4ebcdc77b15e178cb88e35d39db7d47e55c3c17cd5d7b89beb6318d67b3678456bcd5bfeeb803ea88b44b3
   languageName: node
   linkType: hard
 
@@ -5876,7 +5876,7 @@ __metadata:
     "@babel/core": "npm:^7.21.0"
     "@babel/preset-env": "npm:^7.20.2"
     "@babel/preset-typescript": "npm:^7.21.0"
-    "@cloudflare/workers-types": "npm:^4.20230221.0"
+    "@cloudflare/workers-types": "npm:^4.20230228.0"
     "@types/jest": "npm:^29.4.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.54.0"
     "@typescript-eslint/parser": "npm:^5.54.0"
