@@ -2,7 +2,9 @@
 /* SPDX-License-Identifier: MIT */
 
 import { decodeJwt } from "jose";
+import { canUseDefaultCache } from "../core/env.js";
 import { FetchError } from "../core/error.js";
+import { logOnce } from "../core/utils.js";
 import { getCredentials, type Credentials } from "./credentials.js";
 import { createCustomToken } from "./customToken.js";
 
@@ -15,6 +17,10 @@ const defaultCache = new Map<string, CacheValue>();
  * @throws {FetchError} — If the access token could not be fetched.
  */
 export async function getAccessToken(options: Options) {
+  if (!options?.waitUntil && canUseDefaultCache) {
+    logOnce("warn", "verifyIdToken", "Missing `waitUntil` option.");
+  }
+
   let credentials: Credentials;
 
   // Normalize service account credentials
@@ -78,7 +84,7 @@ export async function getAccessToken(options: Options) {
 
     // Attempt to retrieve the token from Cloudflare cache
     // if the code is running in Cloudflare Workers environment
-    if (self.caches?.default) {
+    if (canUseDefaultCache) {
       res = await caches.default.match(cacheKey);
     }
 
@@ -105,7 +111,7 @@ export async function getAccessToken(options: Options) {
         });
       }
 
-      if (self.caches?.default) {
+      if (canUseDefaultCache) {
         let cacheRes = res.clone();
         cacheRes = new Response(cacheRes.body, cacheRes);
         cacheRes.headers.set("Cache-Control", `max-age=3590, public`);
@@ -165,7 +171,7 @@ type Options = {
      */
     GOOGLE_CLOUD_CREDENTIALS: string;
   };
-  waitUntil?: (promise: Promise<void | unknown>) => void;
+  waitUntil?: <T = unknown>(promise: Promise<T>) => void;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   cache?: Map<string, any>;
 };

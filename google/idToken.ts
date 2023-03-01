@@ -2,7 +2,9 @@
 /* SPDX-License-Identifier: MIT */
 
 import { decodeProtectedHeader, errors, jwtVerify } from "jose";
+import { canUseDefaultCache } from "../core/env.js";
 import { FetchError } from "../core/error.js";
+import { logOnce } from "../core/utils.js";
 import { Credentials, getCredentials, importPublicKey } from "./credentials.js";
 import { createCustomToken } from "./customToken.js";
 
@@ -178,14 +180,12 @@ export async function verifyIdToken(options: {
      */
     GOOGLE_CLOUD_CREDENTIALS?: string;
   };
-  waitUntil?: (promise: Promise<void | unknown>) => Promise<void | unknown>;
-}) {
+  waitUntil?: <T = unknown>(promise: Promise<T>) => void;
+}): Promise<UserToken> {
   if (!options?.idToken) {
     throw new TypeError(`Missing "idToken"`);
   }
 
-  // #region Get the Google Cloud project ID
-  // using environment variables as a fallback
   let projectId = options?.projectId;
 
   if (projectId === undefined) {
@@ -200,7 +200,10 @@ export async function verifyIdToken(options: {
   if (projectId === undefined) {
     throw new TypeError(`Missing "projectId"`);
   }
-  // #endregion
+
+  if (!options.waitUntil && canUseDefaultCache) {
+    logOnce("warn", "verifyIdToken", "Missing `waitUntil` option.");
+  }
 
   // Import the public key from the Google Cloud project
   const header = decodeProtectedHeader(options.idToken);
@@ -231,7 +234,7 @@ export async function verifyIdToken(options: {
     );
   }
 
-  return payload;
+  return payload as UserToken;
 }
 
 type VerifyCustomTokenResponse = {
@@ -241,3 +244,109 @@ type VerifyCustomTokenResponse = {
   expiresIn: string;
   isNewUser: boolean;
 };
+
+export interface UserToken {
+  /**
+   * Always set to https://securetoken.google.com/GOOGLE_CLOUD_PROJECT
+   */
+  iss: string;
+
+  /**
+   * Always set to GOOGLE_CLOUD_PROJECT
+   */
+  aud: string;
+
+  /**
+   * The user's unique ID
+   */
+  sub: string;
+
+  /**
+   * The token issue time, in seconds since epoch
+   */
+  iat: number;
+
+  /**
+   * The token expiry time, normally 'iat' + 3600
+   */
+  exp: number;
+
+  /**
+   * The user's unique ID. Must be equal to 'sub'
+   */
+  user_id: string;
+
+  /**
+   * The time the user authenticated, normally 'iat'
+   */
+  auth_time: number;
+
+  /**
+   * The sign in provider, only set when the provider is 'anonymous'
+   */
+  provider_id?: "anonymous";
+
+  /**
+   * The user's primary email
+   */
+  email?: string;
+
+  /**
+   * The user's email verification status
+   */
+  email_verified?: boolean;
+
+  /**
+   * The user's primary phone number
+   */
+  phone_number?: string;
+
+  /**
+   * The user's display name
+   */
+  name?: string;
+
+  /**
+   * The user's profile photo URL
+   */
+  picture?: string;
+
+  /**
+   * Information on all identities linked to this user
+   */
+  firebase: {
+    /**
+     * The primary sign-in provider
+     */
+    sign_in_provider: SignInProvider;
+
+    /**
+     * A map of providers to the user's list of unique identifiers from
+     * each provider
+     */
+    identities?: { [provider in SignInProvider]?: string[] };
+  };
+
+  /**
+   * Custom claims set by the developer
+   */
+  [claim: string]: unknown;
+
+  /**
+   * @deprecated use `sub` instead
+   */
+  uid?: never;
+}
+
+export type SignInProvider =
+  | "custom"
+  | "email"
+  | "password"
+  | "phone"
+  | "anonymous"
+  | "google.com"
+  | "facebook.com"
+  | "github.com"
+  | "twitter.com"
+  | "microsoft.com"
+  | "apple.com";
