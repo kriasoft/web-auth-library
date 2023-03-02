@@ -132,6 +132,16 @@ app.get("/", ({ env, executionCtx, json }) => {
 You're very welcome to [create a PR](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
 or send me a message on [Discord](https://discord.gg/bSsv7XM).
 
+In order to unit test this library locally you will need [Node.js](https://nodejs.org/) v18+ with [corepack enabled](https://nodejs.org/api/corepack.html), a Google Cloud [service account key](https://cloud.google.com/iam/docs/keys-create-delete) ([here](https://console.cloud.google.com/iam-admin/serviceaccounts)) and Firebase API Key ([here](https://console.cloud.google.com/apis/credentials)) that you can save into the [`test/test.override.env`](./test/test.env) file, for example:
+
+```
+GOOGLE_CLOUD_PROJECT=example
+GOOGLE_CLOUD_CREDENTIALS={"type":"service_account","project_id":"example",...}
+FIREBASE_API_KEY=AIzaSyAZEmdfRWvEYgZpwm6EBLkYJf6ySIMF3Hy
+```
+
+Then run unit tests via `yarn test [--watch]`.
+
 ## License
 
 Copyright © 2022-present Kriasoft. This source code is licensed under the MIT license found in the

@@ -180,7 +180,8 @@ export async function verifyIdToken(options: {
      */
     GOOGLE_CLOUD_CREDENTIALS?: string;
   };
-  waitUntil?: <T = unknown>(promise: Promise<T>) => void;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  waitUntil?: (promise: Promise<any>) => void;
 }): Promise<UserToken> {
   if (!options?.idToken) {
     throw new TypeError(`Missing "idToken"`);
