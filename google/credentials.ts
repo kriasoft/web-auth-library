@@ -43,7 +43,8 @@ export async function importPublicKey(options: {
    * @default "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"
    */
   certificateURL?: string;
-  waitUntil?: <T = unknown>(promise: Promise<T>) => void;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  waitUntil?: (promise: Promise<any>) => void;
 }) {
   const keyId = options.keyId;
   const certificateURL = options.certificateURL ?? "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"; // prettier-ignore
