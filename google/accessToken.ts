@@ -99,7 +99,11 @@ export async function getAccessToken(options: Options) {
       const body = new URLSearchParams();
       body.append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
       body.append("assertion", jwt);
-      res = await fetch(tokenUrl, { method: "POST", body });
+      res = await fetch(tokenUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      });
 
       if (!res.ok) {
         const error = await res
