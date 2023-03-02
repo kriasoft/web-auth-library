@@ -26,7 +26,7 @@
       "url": "https://www.patreon.com/koistya"
     }
   ],
-  "repository": "kriasoft/web-auth-library",
+  "repository": "github:kriasoft/web-auth-library",
   "keywords": [
     "auth",
     "authentication",
