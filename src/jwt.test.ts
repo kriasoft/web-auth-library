@@ -1,11 +1,11 @@
 /* SPDX-FileCopyrightText: 2022-present Kriasoft */
 /* SPDX-License-Identifier: MIT */
 
-import { jwt } from "../index.js";
+import * as jwt from './jwt.js'
 
-test("jwt.decode(token)", () => {
+test('jwt.decode(token)', () => {
   const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmb28iOiJiYXIiLCJleHAiOjEzOTMyODY4OTMsImlhdCI6MTM5MzI2ODg5M30.4-iaDojEVl0pJQMjrbM1EzUIfAZgsbK_kgnVyVxFSVo"; // prettier-ignore
-  const result = jwt.decode(token);
+  const result = jwt.decode(token)
 
   expect(result).toMatchInlineSnapshot(`
     {
@@ -21,12 +21,12 @@ test("jwt.decode(token)", () => {
       },
       "signature": "4-iaDojEVl0pJQMjrbM1EzUIfAZgsbK_kgnVyVxFSVo",
     }
-  `);
-});
+  `)
+})
 
-test("jwt.decode(unicodeToken)", () => {
+test('jwt.decode(unicodeToken)', () => {
   const unicodeToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9zw6kiLCJpYXQiOjE0MjU2NDQ5NjZ9.1CfFtdGUPs6q8kT3OGQSVlhEMdbuX0HfNSqum0023a0"; // prettier-ignore
-  const result = jwt.decode(unicodeToken);
+  const result = jwt.decode(unicodeToken)
 
   expect(result).toMatchInlineSnapshot(`
     {
@@ -41,12 +41,12 @@ test("jwt.decode(unicodeToken)", () => {
       },
       "signature": "1CfFtdGUPs6q8kT3OGQSVlhEMdbuX0HfNSqum0023a0",
     }
-  `);
-});
+  `)
+})
 
-test("jwt.decode(binaryToken)", () => {
+test('jwt.decode(binaryToken)', () => {
   const binaryToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9z6SIsImlhdCI6MTQyNTY0NDk2Nn0.cpnplCBxiw7Xqz5thkqs4Mo_dymvztnI0CI4BN0d1t8"; // prettier-ignore
-  const result = jwt.decode(binaryToken);
+  const result = jwt.decode(binaryToken)
 
   expect(result).toMatchInlineSnapshot(`
     {
@@ -61,5 +61,5 @@ test("jwt.decode(binaryToken)", () => {
       },
       "signature": "cpnplCBxiw7Xqz5thkqs4Mo_dymvztnI0CI4BN0d1t8",
     }
-  `);
-});
+  `)
+})

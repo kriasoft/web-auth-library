@@ -8,33 +8,19 @@
  * @type {import("@jest/types").Config.InitialOptions}
  */
 export default {
-  testEnvironment: "miniflare",
+  testEnvironment: 'miniflare',
 
-  testPathIgnorePatterns: [
-    "<rootDir>/.git/",
-    "<rootDir>/.yarn/",
-    "<rootDir>/dist/",
-  ],
+  testPathIgnorePatterns: ['<rootDir>/.git/', '<rootDir>/.yarn/', '<rootDir>/dist/'],
 
-  moduleFileExtensions: [
-    "ts",
-    "js",
-    "mjs",
-    "cjs",
-    "jsx",
-    "ts",
-    "tsx",
-    "json",
-    "node",
-  ],
+  moduleFileExtensions: ['ts', 'js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node'],
 
-  modulePathIgnorePatterns: ["<rootDir>/dist/"],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
 
-  setupFiles: ["<rootDir>/test/setup.ts"],
+  setupFiles: ['<rootDir>/test/setup.ts'],
 
   transform: {
-    "\\.ts$": "babel-jest",
+    '\\.ts$': 'babel-jest',
   },
 
-  extensionsToTreatAsEsm: [".ts"],
-};
+  extensionsToTreatAsEsm: ['.ts'],
+}

@@ -35,12 +35,12 @@ $ yarn add web-auth-library
 **NOTE**: The `credentials` argument in the examples below is expected to be a serialized JSON string of a [Google Cloud service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys), `apiKey` is Google Cloud API Key (Firebase API Key), and `projectId` is a Google Cloud project ID.
 
 ```ts
-import { verifyIdToken } from "web-auth-library/google";
+import { verifyIdToken } from 'web-auth-library/google'
 
 const token = await verifyIdToken({
   idToken,
   credentials: env.GOOGLE_CLOUD_CREDENTIALS,
-});
+})
 
 // => {
 //   iss: 'https://securetoken.google.com/example',
@@ -57,32 +57,29 @@ const token = await verifyIdToken({
 ### Create an access token for accessing [Google Cloud APIs](https://developers.google.com/apis-explorer)
 
 ```ts
-import { getAccessToken } from "web-auth-library/google";
+import { getAccessToken } from 'web-auth-library/google'
 
 // Generate a short lived access token from the service account key credentials
 const accessToken = await getAccessToken({
   credentials: env.GOOGLE_CLOUD_CREDENTIALS,
-  scope: "https://www.googleapis.com/auth/cloud-platform",
-});
+  scope: 'https://www.googleapis.com/auth/cloud-platform',
+})
 
 // Make a request to one of the Google's APIs using that token
-const res = await fetch(
-  "https://cloudresourcemanager.googleapis.com/v1/projects",
-  {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  }
-);
+const res = await fetch('https://cloudresourcemanager.googleapis.com/v1/projects', {
+  headers: { Authorization: `Bearer ${accessToken}` },
+})
 ```
 
 ## Create a custom ID token using Service Account credentials
 
 ```ts
-import { getIdToken } from "web-auth-library/google";
+import { getIdToken } from 'web-auth-library/google'
 
 const idToken = await getIdToken({
   credentials: env.GOOGLE_CLOUD_CREDENTIALS,
-  audience: "https://example.com",
-});
+  audience: 'https://example.com',
+})
 ```
 
 ## An alternative way passing credentials
@@ -90,10 +87,10 @@ const idToken = await getIdToken({
 Instead of passing credentials via `options.credentials` argument, you can also let the library pick up credentials from the list of environment variables using standard names such as `GOOGLE_CLOUD_CREDENTIALS`, `GOOGLE_CLOUD_PROJECT`, `FIREBASE_API_KEY`, for example:
 
 ```ts
-import { verifyIdToken } from "web-auth-library/google";
+import { verifyIdToken } from 'web-auth-library/google'
 
-const env = { GOOGLE_CLOUD_CREDENTIALS: "..." };
-const token = await verifyIdToken({ idToken, env });
+const env = { GOOGLE_CLOUD_CREDENTIALS: '...' }
+const token = await verifyIdToken({ idToken, env })
 ```
 
 ## Optimize cache renewal background tasks
