@@ -3,4 +3,4 @@
 
 export const canUseDefaultCache =
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  typeof (globalThis as any).caches?.default?.put === "function";
+  typeof (globalThis as any).caches?.default?.put === 'function'

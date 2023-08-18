@@ -2,9 +2,9 @@
 /* SPDX-License-Identifier: MIT */
 
 import { decodeProtectedHeader, errors, jwtVerify } from "jose";
-import { canUseDefaultCache } from "../core/env.js";
-import { FetchError } from "../core/error.js";
-import { logOnce } from "../core/utils.js";
+import { canUseDefaultCache } from "../env.js";
+import { FetchError } from "../error.js";
+import { logOnce } from "../utils.js";
 import { Credentials, getCredentials, importPublicKey } from "./credentials.js";
 import { createCustomToken } from "./customToken.js";
 

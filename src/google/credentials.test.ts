@@ -1,7 +1,7 @@
 /* SPDX-FileCopyrightText: 2022-present Kriasoft */
 /* SPDX-License-Identifier: MIT */
 
-import env from "../test/env.js";
+import env from "../../test/env.js";
 import {
   getCredentials,
   getPrivateKey,

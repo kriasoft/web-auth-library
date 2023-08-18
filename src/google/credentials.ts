@@ -2,7 +2,7 @@
 /* SPDX-License-Identifier: MIT */
 
 import { importPKCS8, importX509, KeyLike } from "jose";
-import { FetchError } from "../core/error.js";
+import { FetchError } from "../error.js";
 
 const inFlight = new Map<string, Promise<KeyLike>>();
 const cache = new Map<string, { key: KeyLike; expires: number }>();

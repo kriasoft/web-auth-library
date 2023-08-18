@@ -2,7 +2,7 @@
 /* SPDX-License-Identifier: MIT */
 
 import { decodeJwt } from "jose";
-import env from "../test/env.js";
+import env from "../../test/env.js";
 import { createCustomToken } from "./customToken.js";
 
 test("createCustomToken({ credentials, scope })", async () => {
