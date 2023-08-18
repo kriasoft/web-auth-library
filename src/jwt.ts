@@ -1,40 +1,36 @@
 /* SPDX-FileCopyrightText: 2022-present Kriasoft */
 /* SPDX-License-Identifier: MIT */
 
-import { base64url } from "rfc4648";
+import { base64url } from 'rfc4648'
 
 /**
  * Converts the given JSON Web Token string into a `Jwt` object.
  */
 function decode<T = JwtPayload, H = JwtHeader>(token: string): Jwt<T, H> {
-  const segments = token.split(".");
-  const dec = new TextDecoder();
+  const segments = token.split('.')
+  const dec = new TextDecoder()
 
   if (segments.length !== 3) {
-    throw new Error();
+    throw new Error()
   }
 
   return {
-    header: JSON.parse(
-      dec.decode(base64url.parse(segments[0], { loose: true }))
-    ),
+    header: JSON.parse(dec.decode(base64url.parse(segments[0], { loose: true }))),
 
-    payload: JSON.parse(
-      dec.decode(base64url.parse(segments[1], { loose: true }))
-    ),
+    payload: JSON.parse(dec.decode(base64url.parse(segments[1], { loose: true }))),
 
     data: `${segments[0]}.${segments[1]}`,
     signature: segments[2],
-  };
+  }
 }
 
 async function verify<T = JwtPayload, H = JwtHeader>(
   token: Jwt<T, H> | string,
-  options: VerifyOptions
+  options: VerifyOptions,
 ): Promise<T | undefined> {
-  const enc = new TextEncoder();
-  const jwt = typeof token === "string" ? decode<T, H>(token) : token;
-  const aud = (jwt.payload as { aud?: string }).aud;
+  const enc = new TextEncoder()
+  const jwt = typeof token === 'string' ? decode<T, H>(token) : token
+  const aud = (jwt.payload as { aud?: string }).aud
 
   if (
     options.audience &&
@@ -42,17 +38,17 @@ async function verify<T = JwtPayload, H = JwtHeader>(
       (Array.isArray(options.audience) && !options.audience.includes(aud)) ||
       options.audience !== aud)
   ) {
-    return;
+    return
   }
 
   const verified = await crypto.subtle.verify(
     options.key.algorithm,
     options.key,
     base64url.parse(jwt.signature, { loose: true }),
-    enc.encode(jwt.data)
-  );
+    enc.encode(jwt.data),
+  )
 
-  return verified ? jwt.payload : undefined;
+  return verified ? jwt.payload : undefined
 }
 
 /* ------------------------------------------------------------------------------- *
@@ -64,19 +60,19 @@ async function verify<T = JwtPayload, H = JwtHeader>(
  */
 interface JwtHeader {
   /** Token type */
-  typ?: string;
+  typ?: string
   /** Content type*/
-  cty?: string;
+  cty?: string
   /** Message authentication code algorithm */
-  alg?: string;
+  alg?: string
   /** Key ID */
-  kid?: string;
+  kid?: string
   /** x.509 Certificate Chain */
-  x5c?: string;
+  x5c?: string
   /** x.509 Certificate Chain URL */
-  x5u?: string;
+  x5u?: string
   /** Critical */
-  crit?: string;
+  crit?: string
 }
 
 /**
@@ -84,43 +80,36 @@ interface JwtHeader {
  */
 interface JwtPayload {
   /** Issuer */
-  iss?: string;
+  iss?: string
   /** Subject */
-  sub?: string;
+  sub?: string
   /** Audience */
-  aud?: string;
+  aud?: string
   /** Authorized party */
-  azp?: string;
+  azp?: string
   /** Expiration time */
-  exp?: number;
+  exp?: number
   /** Not before */
-  nbf?: number;
+  nbf?: number
   /** Issued at */
-  iat?: number;
+  iat?: number
   /** JWT ID */
-  jti?: string;
+  jti?: string
 }
 
 /**
  * JSON Web Token (JWT)
  */
 type Jwt<T = JwtPayload, H = JwtHeader> = {
-  header: H;
-  payload: T;
-  data: string;
-  signature: string;
-};
+  header: H
+  payload: T
+  data: string
+  signature: string
+}
 
 type VerifyOptions = {
-  key: CryptoKey;
-  audience?: string[] | string;
-};
+  key: CryptoKey
+  audience?: string[] | string
+}
 
-export {
-  decode,
-  verify,
-  type Jwt,
-  type JwtHeader,
-  type JwtPayload,
-  type VerifyOptions,
-};
+export { decode, verify, type Jwt, type JwtHeader, type JwtPayload, type VerifyOptions }
