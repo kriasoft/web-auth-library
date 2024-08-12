@@ -203,7 +203,7 @@ export async function verifyIdToken(options: {
   }
 
   if (!options.waitUntil && canUseDefaultCache) {
-    logOnce("warn", "verifyIdToken", "Missing `waitUntil` option.");
+    logOnce("warn", "verifyIdToken", "verifyIdToken missing `waitUntil` option.");
   }
 
   // Import the public key from the Google Cloud project

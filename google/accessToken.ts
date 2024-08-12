@@ -18,7 +18,7 @@ const defaultCache = new Map<string, CacheValue>();
  */
 export async function getAccessToken(options: Options) {
   if (!options?.waitUntil && canUseDefaultCache) {
-    logOnce("warn", "verifyIdToken", "Missing `waitUntil` option.");
+    logOnce("warn", "getAccessToken", "getAccessToken missing `waitUntil` option.");
   }
 
   let credentials: Credentials;
