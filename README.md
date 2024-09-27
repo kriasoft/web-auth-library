@@ -96,6 +96,100 @@ const env = { GOOGLE_CLOUD_CREDENTIALS: "..." };
 const token = await verifyIdToken({ idToken, env });
 ```
 
+## Impersonating the service account user
+
+To send emails via the Gmail service provided by Google Cloud, you need to impersonate the service account user. This can be done by passing the `subject` argument to the `getAccessToken` function:
+
+```js
+import { getAccessToken } from "web-auth-library/google";
+
+const senderName = "Admin";
+const senderEmail = "your-service-account@yoursite.com";
+const recipientName = "Lucky User";
+const recipientEmail = "luckyuser@example.com";
+const subject = "🤘 Hello 🤘";
+const text = "This is a message just to say hello.\nSo... <b>Hello!</b>  🤘❤️😎";
+
+const message = createMessage(senderName, senderEmail, recipientName, recipientEmail, subject, text);
+
+const result = await sendEmail(env.GOOGLE_CLOUD_CREDENTIALS, senderEmail, message);
+console.log(result);
+
+/**
+ * Create a message to be sent via Gmail.
+ * Adapted from https://github.com/googleapis/google-api-nodejs-client/blob/main/samples/gmail/send.js
+ * @param {string} senderName The `from` name
+ * @param {string} senderEmail The `from` email address
+ * @param {string} [recipientName] The `to` name
+ * @param {string} recipientEmail The `to` email address
+ * @param {string} subject The email subject
+ * @param {string} text The email body
+ */
+function createMessage(senderName, senderEmail, recipientName, recipientEmail, subject, text) {
+  const utf8Subject = `=?utf-8?B?${base64Encode(subject)}?=`;
+  const message = [
+    `From: ${senderName} <${senderEmail}>`,
+    `To: ${recipientName ? `${recipientName} <${recipientEmail}>` : recipientEmail}`,
+    "Content-Type: text/html; charset=utf-8",
+    "MIME-Version: 1.0",
+    `Subject: ${utf8Subject}`,
+    "",
+    text,
+  ].join("\n");
+
+  const encodedMessage = base64Encode(message)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+
+  return encodedMessage;
+}
+
+/**
+ * Send an email using Gmail.
+ * @param {string} credentials The credentials for the service account, as stringified JSON
+ * @param {string} senderEmail The `from` email address
+ * @param {string} encodedMessage The base64url-encoded email message
+ */
+async function sendEmail(credentials, senderEmail, encodedMessage) {
+  const body = JSON.stringify({
+    raw: encodedMessage,
+  });
+
+  const accessToken = await getAccessToken({
+    credentials,
+    scope: "https://www.googleapis.com/auth/gmail.send",
+    subject: senderEmail,
+  });
+
+  const response = await fetch(
+    "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body,
+    },
+  );
+  return response.json();
+}
+
+/**
+ * Base64 encode a string, without using Node.js's `Buffer`.
+ * @link https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem
+ * @param {string} message
+ */
+function base64Encode(message) {
+  const bytes = new TextEncoder().encode(message);
+  const binString = Array.from(bytes, byte =>
+    String.fromCodePoint(byte),
+  ).join('');
+  return btoa(binString);
+}
+```
+
 ## Optimize cache renewal background tasks
 
 Pass the optional `waitUntil(promise)` function provided by the target runtime to optimize the way authentication tokens are being renewed in background. For example, using Cloudflare Workers and [Hono.js](https://hono.dev/):

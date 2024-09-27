@@ -95,6 +95,7 @@ export async function getAccessToken(options: Options) {
       const jwt = await createCustomToken({
         credentials,
         scope: options.audience ?? options.scope,
+        subject: options.subject,
       });
       const body = new URLSearchParams();
       body.append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
@@ -160,6 +161,10 @@ type Options = {
    * Authentication scope(s).
    */
   scope?: string[] | string;
+  /**
+   * The principal that is the subject of the JWT.
+   */
+  subject?: string;
   /**
    * Recipients that the ID token should be issued for.
    */
