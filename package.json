@@ -59,11 +59,18 @@
   ],
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./jwt": "./dist/core/jwt.js",
+    ".": {
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./jwt": {
+      "require": "./dist/core/jwt.cjs",
+      "default": "./dist/core/jwt.js"
+    },
     "./google": {
       "types": "./dist/google/index.d.ts",
       "import": "./dist/google/index.js",
+      "require": "./dist/google/index.cjs",
       "default": "./dist/google/index.js"
     },
     "./package.json": "./package.json"
@@ -71,7 +78,7 @@
   "scripts": {
     "lint": "eslint --report-unused-disable-directives .",
     "test": "node --experimental-vm-modules $(yarn bin jest)",
-    "build": "rm -rf ./dist && yarn tsc"
+    "build": "rm -rf ./dist && yarn tsc && BABEL_ENV=commonjs yarn babel dist --extensions .js --out-dir dist --out-file-extension .cjs"
   },
   "dependencies": {
     "jose": ">= 4.12.0 < 5.0.0",
@@ -116,7 +123,32 @@
           }
         }
       ]
-    ]
+    ],
+    "env": {
+      "commonjs": {
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "targets": {
+                "node": "current"
+              },
+              "modules": "commonjs"
+            }
+          ]
+        ],
+        "plugins": [
+          [
+            "replace-import-extension",
+            {
+              "extMapping": {
+                ".js": ".cjs"
+              }
+            }
+          ]
+        ]
+      }
+    }
   },
   "eslintConfig": {
     "root": true,
